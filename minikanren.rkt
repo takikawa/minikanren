@@ -227,4 +227,4 @@
     ((_ (x ...) g0 g ...)
      (lambdag@ (s)
                (let ((x (walk* x s)) ...)
-                 (bind* (g0 s) g ...)))))))
+                 (bind* (g0 s) g ...))))))
