@@ -1,3 +1,5 @@
-This is just the [PLaneT package](http://planet.racket-lang.org/display.ss?package=miniKanren.plt&owner=dfriedman)
-for miniKanren by Dan Friedman with additional Scribble documentation and some minor
-Racketization.
+This repository contains a Planet 2 version of the original
+[Planet package](http://planet.racket-lang.org/display.ss?package=miniKanren.plt&owner=dfriedman)
+of minikanren by Dan Friedman.
+
+This package also contains Scribble documentation.
