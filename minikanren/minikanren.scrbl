@@ -1,5 +1,7 @@
 #lang scribble/manual
 
+@(require (for-label minikanren racket/base))
+
 @title{MiniKanren: logic programming in Scheme}
 
 @defmodule[minikanren]
@@ -9,7 +11,7 @@ An embedding of logic programming in Scheme.
 The miniKanren language in this package is the language presented in
 Byrd and Friedman's "From variadic functions to variadic relations"
 [1]; it is a descendant of the language presented in Friedman, Byrd,
-and Kiselyov's _The Reasoned Schemer_ [2]. The code itself was written
+and Kiselyov's @emph{The Reasoned Schemer} [2]. The code itself was written
 by (in alphabetical order) Will Byrd, Dan Friedman, Oleg Kiselyov, and
 Chung-Chieh Shan.
 
@@ -25,41 +27,40 @@ Introduces a new goal that unifies two values.
 }
 
 @defform[(conde ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]{
-Introduces a new goal that behaves analagously to cond.
+Introduces a new goal that behaves analagously to @racket[cond].
 }
 
 @defform[(fresh (x ...) goal_0 goal_1 ...)]{
-Introduces a new logic variable bound to each x in the scope of its
+Introduces a new logic variable bound to each @racket[_x] in the scope of its
 body, each clause of which should be a goal.
 }
 
 @defform[(run n (x) goal_0 goal_1 ...)]{
-Finds up to n ways to instantiate the logic variable bound to x
-such that all the goals in its body succeed. (If n is #f, then run finds
-all satisfying instantiations for x.) 
+Finds up to @racket[_n] ways to instantiate the logic variable bound to
+@racket[_x] such that all the goals in its body succeed. (If @racket[_n] is
+@racket[#f], then run finds all satisfying instantiations for @racket[_x].)
 }
 
 
 Minikanren also provides the following helpers:
 
 @defform[(run* (x) goal_0 goal_1 ...)]{
-Equivalent to (run #f (x) goal_0 goal_1 ...)
+Equivalent to @racket[(run #f (x) goal_0 goal_1 ...)].
 }
 
 @defform[(conda ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]{}
 @defform[(condu ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]{
-Variants of conde that correspond to the committed-choice of Mercury
+Variants of @racket[conde] that correspond to the committed-choice of Mercury
 and are used in place of Prolog's cut.
 }
 
 @defform[(project (x ...) goal_1 goal_2 ...)]{
-Applies the implicit substitution to zero or more lexical variables,
-rebinds those variables to the values returned, and evaluates the goal
-expressions in its body. The body of a project typically includes at
-least one begin expression --- any expression is a goal expression if
-its value is a miniKanren goal. project has many uses, such as
-displaying the values associated with variables when tracing a
-program.
+Applies the implicit substitution to zero or more lexical variables, rebinds
+those variables to the values returned, and evaluates the goal expressions in
+its body. The body of a @racket[project] typically includes at least one begin
+expression --- any expression is a goal expression if its value is a miniKanren
+goal. @racket[project] has many uses, such as displaying the values associated
+with variables when tracing a program.
 }
 
 References
