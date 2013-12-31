@@ -5,7 +5,7 @@ of minikanren by Dan Friedman.
 This package additionally includes Scribble documentation.
 
 Installation:
-  * `rack pkg install minikanren`
+  * `raco pkg install minikanren`
 
 ---
 
