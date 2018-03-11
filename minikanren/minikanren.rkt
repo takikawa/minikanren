@@ -1,7 +1,8 @@
 #lang racket/base
 
 (provide == conde fresh run run*
-         conda condu project)
+         conda condu project
+         succeed fail)
 
 (define-syntax lambdag@
   (syntax-rules ()
@@ -228,3 +229,6 @@
      (lambdag@ (s)
                (let ((x (walk* x s)) ...)
                  (bind* (g0 s) g ...))))))
+
+(define succeed (== #t #t))
+(define fail (== #t #f))
