@@ -168,7 +168,13 @@
 
 (define-syntax run
   (syntax-rules ()
-    ((_ n (x) g0 g^ ...)
+    ((_ n (x) g ...)
+     (run n x g ...))
+    ((_ n (x0 x ...) g ...)
+     (run n q (fresh (x0 x ...)
+                     (== `(,x0 ,x ...) q) g ...)))
+    
+    ((_ n x g0 g^ ...)
      (take n (lambdaf@ ()
                        (let ((g (fresh (x)
                                   (lambdag@ (s)
@@ -179,7 +185,7 @@
 
 (define-syntax run*
   (syntax-rules ()
-    ((_ (x) g ...) (run #f (x) g ...))))
+    ((_ x g ...) (run #f x g ...))))
 
 (define take
   (lambda (n f)
