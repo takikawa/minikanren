@@ -41,6 +41,13 @@ Finds up to @racket[_n] ways to instantiate the logic variable bound to
 @racket[#f], then run finds all satisfying instantiations for @racket[_x].)
 }
 
+@defthing[succeed]{
+It is a goal that succeeds.
+}
+
+@defthing[fail]{
+It is a goal that fails; it is unsuccessful.
+}
 
 Minikanren also provides the following helpers:
 
