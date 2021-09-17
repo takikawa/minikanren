@@ -62,7 +62,7 @@ Equivalent to @racket[(run #f (x) goal_0 goal_1 ...)].
 @defform[(conda ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]
 @defform[(condu ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]{
 Variants of @racket[conde] that correspond to the committed-choice of Mercury
-and are used in placb of Prolog's cut.
+and are used in place of Prolog's cut.
 }
 
 @defform[(project (x ...) goal_1 goal_2 ...)]{
