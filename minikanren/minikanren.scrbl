@@ -6,7 +6,7 @@
 
 @defmodule[minikanren]
 
-An embedding of logic programming in Scheme. 
+An embedding of logic programming in Scheme.
 
 The miniKanren language in this package is the language presented in
 Byrd and Friedman's "From variadic functions to variadic relations"
@@ -30,6 +30,10 @@ Introduces a new goal that unifies two values.
 Introduces a new goal that behaves analagously to @racket[cond].
 }
 
+@defform[(condi ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]{
+@racket[condi] behaves like @racket[conde], except that its values are interleaved.
+}
+
 @defform[(fresh (x ...) goal_0 goal_1 ...)]{
 Introduces a new logic variable bound to each @racket[_x] in the scope of its
 body, each clause of which should be a goal.
@@ -41,11 +45,11 @@ Finds up to @racket[_n] ways to instantiate the logic variable bound to
 @racket[#f], then run finds all satisfying instantiations for @racket[_x].)
 }
 
-@defthing[succeed]{
+@defform[succeed]{
 It is a goal that succeeds.
 }
 
-@defthing[fail]{
+@defform[fail]{
 It is a goal that fails; it is unsuccessful.
 }
 
@@ -55,10 +59,10 @@ Minikanren also provides the following helpers:
 Equivalent to @racket[(run #f (x) goal_0 goal_1 ...)].
 }
 
-@defform[(conda ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]{}
+@defform[(conda ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]
 @defform[(condu ((goal_1 goal_1a ...) (goal_2 goal_2a ...) ...))]{
 Variants of @racket[conde] that correspond to the committed-choice of Mercury
-and are used in place of Prolog's cut.
+and are used in placb of Prolog's cut.
 }
 
 @defform[(project (x ...) goal_1 goal_2 ...)]{
