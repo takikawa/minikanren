@@ -1,7 +1,7 @@
 #lang racket/base
 
 (provide succeed fail
-         == conde fresh run run*
+         == fresh conde condi run run*
          conda condu project)
 
 
@@ -128,14 +128,25 @@
      (lambdag@ (s)
        (unify u v s))]))
 
-(define-syntax conde
+(define-syntax fresh
   (syntax-rules ()
-    [(_ (g0 g ...) (g1 g^ ...) ...)
+    [(_ (x ...) g0 g ...)
+     (lambdag@ (s)
+       (let ([x (var 'x)] ...)
+         (bind* (g0 s) g ...)))]))
+
+(define-syntax conde
+  (syntax-rules (else)
+    [(_) fail]
+    [(_ [g]) g]
+    [(_ [else g]) g]
+    [(_ [else g0 g ...]) (conde [g0 g ...])]
+    [(_ [g0 g ...] c ...)
      (lambdag@ (s)
        (inc
         (mplus*
          (bind* (g0 s) g ...)
-         (bind* (g1 s) g^ ...) ...)))]))
+         ((conde c ...) s))))]))
 
 (define-syntax mplus*
   (syntax-rules ()
@@ -147,15 +158,8 @@
     (case-inf a-inf
        (f)
        ((a) (choice a f))
-       ((a f^) (choice a (lambdaf@ () (mplus (f) f^))))
-       ((f^) (inc (mplus (f) f^))))))
-
-(define-syntax fresh
-  (syntax-rules ()
-    [(_ (x ...) g0 g ...)
-     (lambdag@ (s)
-       (let ([x (var 'x)] ...)
-         (bind* (g0 s) g ...)))]))
+       ((a f^) (choice a (lambdaf@ () (mplus (f^) f))))
+       ((f^) (inc (mplus (f^) f))))))
 
 (define-syntax bind*
   (syntax-rules ()
@@ -171,6 +175,48 @@
        ((a) (g a))
        ((a f) (mplus (g a) (lambdaf@ () (bind (f) g))))
        ((f) (inc (bind (f) g))))))
+
+(define-syntax condi
+  (syntax-rules (else)
+    [(_) fail]
+    [(_ [g]) g]
+    [(_ [else g]) g]
+    [(_ [else g0 g ...]) (condi [g0 g ...])]
+    [(_ [g0 g ...] c ...)
+     (lambdag@ (s)
+       (inc
+        (mplusi*
+         (bindi* (g0 s) g ...)
+         ((condi c ...) s))))]))
+
+(define-syntax mplusi*
+  (syntax-rules ()
+    [(_ e) e]
+    [(_ e0 e ...) (mplusi e0 (lambdaf@ () (mplusi* e ...)))]))
+
+(define mplusi
+  (lambda (a-inf f)
+    (case-inf a-inf
+       (f)
+       ((a) (choice a f))
+       ((a f^) (choice a (lambdaf@ () (mplusi (f) f^))))
+       ((f^) (inc (mplusi (f) f^))))))
+
+(define-syntax bindi*
+  (syntax-rules ()
+    [(_ e) e]
+    [(_ e g0 g ...)
+     (let ([a-inf e])
+       (and a-inf (bindi* (bindi a-inf g0) g ...)))]))
+
+(define bindi
+  (lambda (a-inf g)
+    (case-inf a-inf
+       (mzero)
+       ((a) (g a))
+       ((a f) (mplusi (g a) (lambdaf@ () (bindi (f) g))))
+       ((f) (inc (bindi (f) g))))))
+
 
 (define-syntax run
   (syntax-rules ()
@@ -203,24 +249,31 @@
            ((f) (take n f))))))
 
 (define-syntax conda
-  (syntax-rules ()
-    [(_ (g0 g ...) (g1 g^ ...) ...)
-     (lambdag@ (s)
-       (if* (picka (g0 s) g ...) (picka (g1 s) g^ ...) ...))]))
+  (syntax-rules (else)
+    [(_) fail]
+    [(_ [g]) g]
+    [(_ [else g]) g]
+    [(_ [else g0 g ...]) (conda [g0 g ...])]
+    [(_ [g0 g ...] c ...)
+     (lambdag@ (s) (if* (picka (g0 s) g ...) ((conda c ...) s)))]))
 
 (define-syntax condu
-  (syntax-rules ()
-    [(_ (g0 g ...) (g1 g^ ...) ...)
-     (lambdag@ (s)
-       (if* (picku (g0 s) g ...) (picku (g1 s) g^ ...) ...))]))
+  (syntax-rules (else)
+    [(_) fail]
+    [(_ [g]) g]
+    [(_ [else g]) g]
+    [(_ [else g0 g ...]) (condu [g0 g ...])]
+    [(_ [g0 g ...] c ...)
+     (lambdag@ (s) (if* (picku (g0 s) g ...) ((condu c ...) s)))]))
 
 (define-syntax if*
   (syntax-rules ()
     [(_) (mzero)]
-    [(_ (pick e g ...) b ...)
+    [(_ g) g]
+    [(_ (pick e g ...) c ...)
      (let loop ([a-inf e])
        (case-inf a-inf
-          (if* b ...)
+          (if* c ...)
           ((a) (bind* a-inf g ...))
           ((a f) (bind* (pick a a-inf) g ...))
           ((f) (inc (loop (f))))))]))
