@@ -30,8 +30,16 @@ Introduces a new goal that unifies two values.
 Introduces a new goal that behaves analagously to @racket[cond].
 }
 
+@defform[(all goal_0 goal_1 ...)]{
+The goals of an all must succeed for the all to succeed.
+}
+
 @defform[(condi [goal_1 goal_1a ...] [goal_2 goal_2a ...] ...)]{
 @racket[condi] behaves like @racket[conde], except that its values are interleaved.
+}
+
+@defform[(alli goal_0 goal_1 ...)]{
+@racket[alli] behaves like @racket[all], except that its values are interleaved.
 }
 
 @defform[(fresh (x ...) goal_0 goal_1 ...)]{
