@@ -1,7 +1,8 @@
 #lang racket/base
 
 (provide succeed fail
-         == fresh conde condi run run*
+         == fresh run run*
+         conde all condi alli
          conda condu project)
 
 
@@ -148,6 +149,17 @@
          (bind* (g0 s) g ...)
          ((conde c ...) s))))]))
 
+(define-syntax all
+  (syntax-rules ()
+    [(_) succeed]
+    [(_ g) g]
+    [(_ g0 g ...)
+     (let ([g^ g0])
+       (lambdag@ (s)
+         (bind (g^ s)
+               (lambdag@ (s)
+                 ((all g ...) s)))))]))
+
 (define-syntax mplus*
   (syntax-rules ()
     [(_ e) e]
@@ -176,6 +188,17 @@
        ((a f) (mplus (g a) (lambdaf@ () (bind (f) g))))
        ((f) (inc (bind (f) g))))))
 
+(define-syntax alli
+  (syntax-rules ()
+    [(_) succeed]
+    [(_ g) g]
+    [(_ g0 g ...)
+     (let ([g^ g0])
+       (lambdag@ (s)
+         (bindi (g^ s)
+                (lambdag@ (s)
+                  ((alli g ...) s)))))]))
+
 (define-syntax condi
   (syntax-rules (else)
     [(_) fail]
@@ -186,7 +209,7 @@
      (lambdag@ (s)
        (inc
         (mplusi*
-         (bindi* (g0 s) g ...)
+         (bind* (g0 s) g ...)
          ((condi c ...) s))))]))
 
 (define-syntax mplusi*
@@ -200,7 +223,7 @@
        (f)
        ((a) (choice a f))
        ((a f^) (choice a (lambdaf@ () (mplusi (f) f^))))
-       ((f^) (inc (mplusi (f) f^))))))
+       ((f^) (inc (mplusi (f^) f))))))
 
 (define-syntax bindi*
   (syntax-rules ()
