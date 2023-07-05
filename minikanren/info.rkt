@@ -1,3 +1,3 @@
 #lang setup/infotab
 
-(define scribblings '(("minikanren.scrbl")))
+(define scribblings '(("minikanren.scrbl" () ("Logic programming"))))
